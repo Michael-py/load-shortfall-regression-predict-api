@@ -21,7 +21,6 @@
 import pickle
 import json
 import numpy as np
-import pandas as pd
 from model import load_model, make_prediction
 from flask import Flask, request, jsonify
 
@@ -40,24 +39,20 @@ print ('-'*40)
 """ You may use this section (above the app routing function) of the python script to implement 
     any auxiliary functions required to process your model's artifacts.
 """
-def get_params(request):
-    params = request.args.get("data")
-
-    return params
 # Define the API's interface.
 # Here the 'model_prediction()' function will be called when a POST request
 # is sent to our interface located at:
 # http:{Host-machine-ip-address}:5000/api_v0.1
-@app.route('/api_v0.1', methods=['GET', 'POST'])
+@app.route('/api_v0.1', methods=['POST'])
 def model_prediction():
 
-    params = get_params(request)
-    params_df = pd.DataFrame.from_dict([params])
+    # params = get_params(request)
+    # params_df = pd.DataFrame.from_dict([params])
     # We retrieve the data payload of the POST request
-    # data = request.get_json(force=True)
+    data = request.get_json(force=True)
     # We then preprocess our data, and use our pretrained model to make a
     # prediction.
-    output = make_prediction(params_df, static_model)
+    output = make_prediction(data, static_model)
     # We finally package this prediction as a JSON object to deliver a valid
     # response with our API.
     return jsonify(output)
